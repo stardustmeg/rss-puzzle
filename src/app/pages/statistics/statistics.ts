@@ -8,7 +8,7 @@ import { buttonsTextContent, dataLinks, eventNames, tagNames } from '../../const
 import { BaseElement } from '../../utils/base-element.ts';
 import styles from './statistics.module.scss';
 
-export default function createStatisticsPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const statisticsPage = new Statistics(store);
   const buttonsContainer = new BaseElement(tagNames.div, [styles.buttonsContainer]);
 

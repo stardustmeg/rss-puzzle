@@ -11,7 +11,7 @@ import { addFinishedRound, setCurrentSentenceIndex } from '../../store/actions.t
 import { BaseElement } from '../../utils/base-element.ts';
 import styles from './main.module.scss';
 
-export default function createMainPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const mainPage = new BaseElement(tagNames.div, [styles.pageContainer]);
 
   const { currentGameLevel, currentGameRound } = store.getState();

@@ -103,7 +103,7 @@ export class GameChoiceField extends BaseElement {
   }
 }
 
-export default function createChooseGamePage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const INITIAL_LEVEL = 0;
   store.dispatch(changeLevel(INITIAL_LEVEL));
 
