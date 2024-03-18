@@ -8,7 +8,7 @@ import { buttonsTextContent, dataLinks, tagNames } from '../../constants/constan
 import { BaseElement } from '../../utils/base-element.ts';
 import styles from './not-found.module.scss';
 
-export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createNotFoundPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const notFoundPage = new BaseElement(tagNames.div, [styles.pageContainer], {}, '<h1>404</h1>');
 
   const pageText =

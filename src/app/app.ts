@@ -3,17 +3,21 @@ import type { Action, State } from './store/reducer.ts';
 
 import styles from './app.module.scss';
 import { APP_ROUTE } from './constants/app-routes.ts';
-import { buttonsTextContent, initialState, paths, tagNames } from './constants/constants.ts';
+import { buttonsTextContent, initialState, tagNames } from './constants/constants.ts';
 import createStore from './lib/store/store.ts';
+import createChooseGamePage from './pages/choose-game/choose-game.ts';
+import createLoginPage from './pages/login/login.ts';
+import createMainPage from './pages/main/main.ts';
+import createNotFoundPage from './pages/not-found/not-found.ts';
+import createStartPage from './pages/start/start.ts';
+import createStatisticsPage from './pages/statistics/statistics.ts';
 import { Router } from './router/router.ts';
 import { STORAGE_KEY, clearLocalStorage } from './services/local-storage.service.ts';
 import { updateStoreToInitialState } from './store/actions.ts';
 import { rootReducer } from './store/reducer.ts';
 import { BaseElement } from './utils/base-element.ts';
 
-type Paths = (typeof paths)[keyof typeof paths];
-
-export const store = createStore<State, Action>(rootReducer, initialState); // TBD remove to separate module?
+export const store = createStore<State, Action>(rootReducer, initialState);
 
 export const getCurrentStateFromStore = (): State => store.getState();
 
@@ -45,19 +49,25 @@ export default class App {
 
   private createRouter(routerOutlet: BaseElement, defaultPath: string): Router {
     const routes: Route[] = [
-      { component: () => this.lazyLoadPage(paths.startPage), name: APP_ROUTE.Start },
-      { component: () => this.lazyLoadPage(paths.chooseGamePage), name: APP_ROUTE.ChooseGame },
-      { component: () => this.lazyLoadPage(paths.statisticsPage), name: APP_ROUTE.Statistics },
-      { component: () => this.lazyLoadPage(paths.loginPage), name: APP_ROUTE.Login },
-      { component: () => this.lazyLoadPage(paths.mainPage), name: APP_ROUTE.Main },
+      // { component: () => this.lazyLoadPage(paths.startPage), name: APP_ROUTE.Start },
+      // { component: () => this.lazyLoadPage(paths.chooseGamePage), name: APP_ROUTE.ChooseGame },
+      // { component: () => this.lazyLoadPage(paths.statisticsPage), name: APP_ROUTE.Statistics },
+      // { component: () => this.lazyLoadPage(paths.loginPage), name: APP_ROUTE.Login },
+      // { component: () => this.lazyLoadPage(paths.mainPage), name: APP_ROUTE.Main },
+      { component: () => createStartPage(store, this.router), name: APP_ROUTE.Start },
+      { component: () => createChooseGamePage(store, this.router), name: APP_ROUTE.ChooseGame },
+      { component: () => createStatisticsPage(store, this.router), name: APP_ROUTE.Statistics },
+      { component: () => createLoginPage(store, this.router), name: APP_ROUTE.Login },
+      { component: () => createMainPage(store, this.router), name: APP_ROUTE.Main },
     ];
 
-    const notFoundComponent = (): Promise<BaseElement> => this.lazyLoadPage(paths.notFoundPage);
+    // const notFoundComponent = (): Promise<BaseElement> => this.lazyLoadPage(paths.notFoundPage);
+    const notFoundComponent = (): BaseElement => createNotFoundPage(store, this.router);
 
     return new Router(
       routes,
-      async (route) => {
-        const component = await route.component();
+      (route) => {
+        const component = route.component();
         routerOutlet.replaceChildren(component);
       },
       notFoundComponent,
@@ -65,12 +75,12 @@ export default class App {
     );
   }
 
-  private async lazyLoadPage(pagePath: Paths): Promise<BaseElement> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { default: createPage } = await import(/* @vite-ignore */ pagePath);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    return createPage(store, this.router);
-  }
+  // private async lazyLoadPage(pagePath: Paths): Promise<BaseElement> {
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //   const { default: createPage } = await import(pagePath);
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+  //   return createPage(store, this.router);
+  // }
 
   public createLinkButtons(): HTMLButtonElement[] {
     const logOutButton = document.createElement(tagNames.button);

@@ -1,1 +1,2 @@
+cd rss-puzzle
 npx --no -- commitlint --edit ${1}

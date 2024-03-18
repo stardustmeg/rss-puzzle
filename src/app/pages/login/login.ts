@@ -26,7 +26,7 @@ interface InputComponent {
   getValidationState(): boolean;
 }
 
-export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createLoginPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const pageWrapper = new BaseElement(tagNames.div, [styles.wrapper]);
   const loginPage = new BaseElement(tagNames.div, [styles.pageContainer], {}, elementsTextContent.HEADING);
   const formContainer = new BaseElement(tagNames.div, [styles.formContainer]);

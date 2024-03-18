@@ -6,7 +6,6 @@ import type { LinksTypes } from '../../../constants/constants.ts';
 import type { ReduxStore } from '../../../lib/store/types.ts';
 import type { Action, State } from '../../../store/reducer.ts';
 
-import { getCurrentStateFromStore, store } from '../../../app.ts';
 import { dataLinks, specialPrefixes } from '../../../constants/constants.ts';
 import {
   changeLevel,
@@ -43,8 +42,8 @@ interface RoundResponse {
   rounds: RoundData[];
 }
 
-export async function fetchRoundData(): Promise<RoundData[]> {
-  const { currentGameLevel } = getCurrentStateFromStore();
+export async function fetchRoundData(store: ReduxStore<State, Action>): Promise<RoundData[]> {
+  const { currentGameLevel } = store.getState();
   const url: LinksTypes = dataLinks[`level${currentGameLevel}`];
   try {
     const response = await fetch(url); // TBD do typechecking later
@@ -61,8 +60,8 @@ export async function fetchRoundData(): Promise<RoundData[]> {
   }
 }
 
-export async function fetchRoundsCount(): Promise<number> {
-  const { currentGameLevel } = getCurrentStateFromStore();
+export async function fetchRoundsCount(store: ReduxStore<State, Action>): Promise<number> {
+  const { currentGameLevel } = store.getState();
   const url: LinksTypes = dataLinks[`level${currentGameLevel}`];
   try {
     const response = await fetch(url);
@@ -79,11 +78,11 @@ export async function fetchRoundsCount(): Promise<number> {
   }
 }
 
-export async function fetchDataAndProcess(): Promise<RoundData> {
-  const { currentGameRound } = getCurrentStateFromStore();
+export async function fetchDataAndProcess(store: ReduxStore<State, Action>): Promise<RoundData> {
+  const { currentGameRound } = store.getState();
   try {
-    const fetchedData = await fetchRoundData();
-    const roundCount = await fetchRoundsCount();
+    const fetchedData = await fetchRoundData(store);
+    const roundCount = await fetchRoundsCount(store);
 
     store.dispatch(updateCurrentRoundData(fetchedData[currentGameRound]));
     store.dispatch(updateCurrentRoundCount(roundCount));
@@ -94,8 +93,8 @@ export async function fetchDataAndProcess(): Promise<RoundData> {
   }
 }
 
-export async function fetchPicturesForLevel(): Promise<string[]> {
-  const { currentGameLevel } = getCurrentStateFromStore();
+export async function fetchPicturesForLevel(store: ReduxStore<State, Action>): Promise<string[]> {
+  const { currentGameLevel } = store.getState();
   const url: LinksTypes = dataLinks[`level${currentGameLevel}`];
   try {
     const response = await fetch(url);

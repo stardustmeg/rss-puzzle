@@ -1,1 +1,2 @@
+cd rss-puzzle
 npx lint-staged

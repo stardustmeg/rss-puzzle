@@ -33,9 +33,9 @@ export class GameChoiceField extends BaseElement {
     });
   }
 
-  private async getImageSourcesForLevel(): Promise<string[]> {
+  private async getImageSourcesForLevel(store: ReduxStore<State, Action>): Promise<string[]> {
     try {
-      const imageSources: string[] = await fetchPicturesForLevel();
+      const imageSources: string[] = await fetchPicturesForLevel(store);
       return imageSources;
     } catch {
       throw new Error('Something happened with picture sources array!');
@@ -44,7 +44,7 @@ export class GameChoiceField extends BaseElement {
 
   private async loadImagesForLevel(store: ReduxStore<State, Action>, router: Router): Promise<void> {
     try {
-      const sources = await this.getImageSourcesForLevel();
+      const sources = await this.getImageSourcesForLevel(store);
       this.imagesContainer.replaceChildren();
       sources.forEach((source, index) => {
         const imageContainer = new BaseElement(tagNames.div, [styles.imageContainer], {
@@ -62,7 +62,7 @@ export class GameChoiceField extends BaseElement {
         imageContainer.addEventListener('click', async () => {
           const round = parseInt(imageContainer.getAttribute('data-round') || '0', 10);
           store.dispatch(changeRound(round));
-          await fetchDataAndProcess();
+          await fetchDataAndProcess(store);
           router.navigateTo(APP_ROUTE.Main);
         });
 
@@ -103,7 +103,7 @@ export class GameChoiceField extends BaseElement {
   }
 }
 
-export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createChooseGamePage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const INITIAL_LEVEL = 0;
   store.dispatch(changeLevel(INITIAL_LEVEL));
 

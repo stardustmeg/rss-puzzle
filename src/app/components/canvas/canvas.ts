@@ -1,5 +1,6 @@
-/* eslint-disable no-console */
-import { store } from '../../app.ts';
+import type { ReduxStore } from '../../lib/store/types.ts';
+import type { Action, State } from '../../store/reducer.ts';
+
 import { SVGs, dataLinks } from '../../constants/constants.ts';
 
 const size: Record<string, number> = {
@@ -28,7 +29,7 @@ const context = canvas.getContext('2d');
 let pieces: Piece[][] = [];
 let selectedPiece: Piece | null = null;
 
-function updatePuzzleFieldSize(): void {
+function updatePuzzleFieldSize(store: ReduxStore<State, Action>): void {
   const { currentRoundData } = store.getState();
 
   size.rows = currentRoundData.words.length;
@@ -40,7 +41,10 @@ function updatePuzzleFieldSize(): void {
   }
 }
 
-function updateCanvasDimensions(handleResize: (img: HTMLImageElement) => void): Promise<void> {
+function updateCanvasDimensions(
+  store: ReduxStore<State, Action>,
+  handleResize: (img: HTMLImageElement) => void,
+): Promise<void> {
   const { currentSentenceIndex } = store.getState();
   return new Promise((resolve) => {
     // context.clearRect(0, 0, canvas.width, canvas.height); // TBD Get back to that later, I like this idea
@@ -53,8 +57,8 @@ function updateCanvasDimensions(handleResize: (img: HTMLImageElement) => void): 
 
       handleResize(img);
       // context.globalAlpha = 1;
-      createPiecesForRow(currentSentenceIndex, img);
-      randomizePieces();
+      createPiecesForRow(store, currentSentenceIndex, img);
+      randomizePieces(store);
 
       pieces[currentSentenceIndex].forEach((piece) => {
         piece.draw(context, currentSentenceIndex);
@@ -64,7 +68,7 @@ function updateCanvasDimensions(handleResize: (img: HTMLImageElement) => void): 
     };
 
     const { currentRoundData } = store.getState();
-    updatePuzzleFieldSize();
+    updatePuzzleFieldSize(store);
     const imageLink = `${dataLinks.levelLink}${currentRoundData.levelData.imageSrc}`;
     img.src = imageLink;
   });
@@ -100,9 +104,9 @@ export function clearOutCanvas(): void {
     throw new Error('Something is wrong');
   }
 }
-export default function createCanvas(parent: HTMLElement): void {
-  addEventListeners();
-  updateCanvasDimensions((img) => handleResize(img))
+export default function createCanvas(store: ReduxStore<State, Action>, parent: HTMLElement): void {
+  addEventListeners(store);
+  updateCanvasDimensions(store, (img) => handleResize(img))
     .then(() => {
       parent.append(canvas);
     })
@@ -111,21 +115,20 @@ export default function createCanvas(parent: HTMLElement): void {
     });
 }
 
-function addEventListeners(): void {
-  canvas.addEventListener('mousedown', onMouseDown);
+function addEventListeners(store: ReduxStore<State, Action>): void {
+  canvas.addEventListener('mousedown', (evt: MouseEvent) => onMouseDown(store, evt));
   canvas.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('mouseup', onMouseUp);
 }
 
-function onMouseDown(evt: MouseEvent): void {
-  selectedPiece = getPressedPiece({ x: evt.x, y: evt.y });
+function onMouseDown(store: ReduxStore<State, Action>, evt: MouseEvent): void {
+  selectedPiece = getPressedPiece(store, { x: evt.offsetX, y: evt.offsetY });
   if (selectedPiece != null) {
     selectedPiece.offset = {
       x: evt.x - selectedPiece.x,
       y: evt.y - selectedPiece.y,
     };
   }
-  console.log(selectedPiece);
 }
 
 function onMouseMove(evt: MouseEvent): void {
@@ -139,14 +142,11 @@ function onMouseUp(): void {
   selectedPiece = null;
 }
 
-function getPressedPiece(location: { x: number; y: number }): Piece | null {
+function getPressedPiece(store: ReduxStore<State, Action>, location: { x: number; y: number }): Piece | null {
   const { currentSentenceIndex } = store.getState();
-
-  console.log('Clicked location:', location);
 
   for (let i = 0; i < pieces[currentSentenceIndex].length; i += 1) {
     const piece = pieces[currentSentenceIndex][i];
-    console.log('Piece:', piece);
     if (
       location.x > piece.x &&
       location.x < piece.x + piece.width &&
@@ -163,7 +163,7 @@ export function clearOutPieces(): void {
   pieces = [];
 }
 
-function randomizePieces(): void {
+function randomizePieces(store: ReduxStore<State, Action>): void {
   const { currentSentenceIndex } = store.getState();
   for (let i = 0; i < pieces[currentSentenceIndex].length; i += 1) {
     const location = {
@@ -175,7 +175,7 @@ function randomizePieces(): void {
   }
 }
 
-export function createPiecesForRow(rowIndex: number, img: HTMLImageElement): void {
+export function createPiecesForRow(store: ReduxStore<State, Action>, rowIndex: number, img: HTMLImageElement): void {
   const endPieceSVG = new Image();
   endPieceSVG.src = `data:image/svg+xml,${encodeURIComponent(SVGs.endPiece)}`;
 
@@ -198,7 +198,7 @@ export function createPiecesForRow(rowIndex: number, img: HTMLImageElement): voi
     } else {
       svg = middlePieceSVG;
     }
-    pieces[rowIndex].push(new Piece(rowIndex, j, svg, img));
+    pieces[rowIndex].push(new Piece(store, rowIndex, j, svg, img));
   }
 }
 
@@ -223,7 +223,13 @@ class Piece {
 
   public y: number;
 
-  constructor(rowIndex: number, colIndex: number, svg: HTMLImageElement, img: HTMLImageElement) {
+  constructor(
+    store: ReduxStore<State, Action>,
+    rowIndex: number,
+    colIndex: number,
+    svg: HTMLImageElement,
+    img: HTMLImageElement,
+  ) {
     this.rowIndex = rowIndex;
     this.colIndex = colIndex;
     this.img = img;
@@ -253,6 +259,9 @@ class Piece {
     context.lineTo(this.x + this.width + 40, this.y + this.height);
     context.lineTo(this.x, this.y + this.height);
     context.closePath();
+
+    context.drawImage(this.svg, this.x, this.y, this.width, this.height);
+
     context.clip();
 
     context.drawImage(
@@ -263,11 +272,9 @@ class Piece {
       this.img.height / size.rows,
       this.x,
       this.y,
-      this.width + 40,
+      this.width,
       this.height,
     );
-
-    context.drawImage(this.svg, this.x, this.y, this.width + 40, this.height);
 
     context.restore();
 
@@ -276,7 +283,7 @@ class Piece {
     context.strokeStyle = '#eacdc2';
     context.lineWidth = 2;
 
-    const textX = this.x + (this.width - context.measureText(this.word).width) / 2 + 10;
+    const textX = this.x + (this.width - context.measureText(this.word).width) / 2;
     const textY = this.y + this.height / 2;
     context.strokeText(this.word, textX, textY);
     context.fillText(this.word, textX, textY);

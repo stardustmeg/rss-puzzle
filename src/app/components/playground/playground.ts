@@ -158,7 +158,7 @@ export default class Playground extends BaseElement {
 
   private async initialize(): Promise<void> {
     try {
-      await fetchDataAndProcess();
+      await fetchDataAndProcess(this.store);
     } catch (error) {
       throw new Error('Something happened while fetching round data :(');
     }
@@ -193,7 +193,7 @@ export default class Playground extends BaseElement {
   // TBD get rid of code duplication, change naming
 
   public displayImage(): void {
-    createCanvas(this.puzzleField);
+    createCanvas(this.store, this.puzzleField);
   }
 
   public displayInfoAboutRound(): void {

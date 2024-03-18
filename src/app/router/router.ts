@@ -4,7 +4,8 @@ import type { BaseElement } from '../utils/base-element.ts';
 import isAppRoute from './router-helper.ts';
 
 export interface Route {
-  component: () => Promise<BaseElement>;
+  component: () => BaseElement;
+  // component: () => Promise<BaseElement>;
   name: AppRoute;
 }
 
@@ -22,7 +23,8 @@ export class Router {
   constructor(
     private readonly routes: Route[],
     private onHistoryChange: (route: Route) => void,
-    private notFoundComponent: () => Promise<BaseElement>,
+    private notFoundComponent: () => BaseElement,
+    // private notFoundComponent: () => Promise<BaseElement>,
     defaultPath?: string,
   ) {
     window.addEventListener('popstate', this.onHistoryChangeHandler);

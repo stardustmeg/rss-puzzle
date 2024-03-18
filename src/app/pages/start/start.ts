@@ -8,7 +8,7 @@ import { buttonsTextContent, gameDescriptions, tagNames } from '../../constants/
 import { BaseElement } from '../../utils/base-element.ts';
 import styles from './start.module.scss';
 
-export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
+export default function createStartPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const currentState = store.getState();
   const { userFirstName, userLastName } = currentState;
 
