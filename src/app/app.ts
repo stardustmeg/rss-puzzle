@@ -1,3 +1,4 @@
+import type { Route } from './router/router.ts';
 import type { Action, State } from './store/reducer.ts';
 
 import styles from './app.module.scss';
@@ -40,44 +41,57 @@ export default class App {
     this.router.navigateTo(initialRoute);
   }
 
+  // eslint-disable-next-line max-lines-per-function
   private createRouter(routerOutlet: BaseElement, defaultPath: string): Router {
+    const routes: Route[] = [
+      {
+        component: async (): Promise<BaseElement> => {
+          const { default: createPage } = await import('./pages/start/start.ts');
+          return createPage(store, this.router);
+        },
+        name: APP_ROUTE.Start,
+      },
+      {
+        component: async (): Promise<BaseElement> => {
+          const { default: createPage } = await import('./pages/choose-game/choose-game.ts');
+          return createPage(store, this.router);
+        },
+        name: APP_ROUTE.ChooseGame,
+      },
+      {
+        component: async (): Promise<BaseElement> => {
+          const { default: createPage } = await import('./pages/statistics/statistics.ts');
+          return createPage(store, this.router);
+        },
+        name: APP_ROUTE.Statistics,
+      },
+      {
+        component: async (): Promise<BaseElement> => {
+          const { default: createPage } = await import('./pages/login/login.ts');
+          return createPage(store, this.router);
+        },
+        name: APP_ROUTE.Login,
+      },
+      {
+        component: async (): Promise<BaseElement> => {
+          const { default: createPage } = await import('./pages/main/main.ts');
+          return createPage(store, this.router);
+        },
+        name: APP_ROUTE.Main,
+      },
+    ];
+    const notFoundComponent = async (): Promise<BaseElement> => {
+      const { default: createPage } = await import('./pages/not-found/not-found.ts');
+      return createPage(store, this.router);
+    };
+
     return new Router(
-      [
-        {
-          component: async (): Promise<BaseElement> => {
-            const { default: createPage } = await import('./pages/start/start.ts');
-
-            return createPage(store, this.router);
-          },
-          name: APP_ROUTE.Start,
-        },
-        {
-          component: async (): Promise<BaseElement> => {
-            const { default: createPage } = await import('./pages/login/login.ts');
-
-            return createPage(store, this.router);
-          },
-          name: APP_ROUTE.Login,
-        },
-        {
-          component: async (): Promise<BaseElement> => {
-            const { default: createPage } = await import('./pages/choose-game/choose-game.ts');
-
-            return createPage(store, this.router);
-          },
-          name: APP_ROUTE.ChooseGame,
-        },
-      ],
+      routes,
       async (route) => {
         const component = await route.component();
-
         routerOutlet.replaceChildren(component);
       },
-      async () => {
-        const { default: createPage } = await import('./pages/not-found/not-found.ts');
-
-        return createPage(store, this.router);
-      },
+      notFoundComponent,
       defaultPath,
     );
   }
