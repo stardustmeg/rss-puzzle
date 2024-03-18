@@ -1,0 +1,31 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: $standart-number;
+  padding: $standart-number;
+  height: fit-content; // do not touch
+  max-width: $big-number * 35;
+  box-shadow: $base-shadow;
+  font-family: $fancy-font;
+  font-size: $standart-number;
+  text-align: center;
+  color: $dusty-color;
+  background-color: $light-color;
+}
+
+.roundInfo {
+  display: flex;
+  align-self: center;
+  font-family: $fancy-font;
+  font-size: $standart-number * 1.5;
+}
+
+.hidden {
+  display: none;
+}

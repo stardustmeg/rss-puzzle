@@ -1,0 +1,42 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.inputContainer {
+  margin: $small-pixel;
+  width: $big-pixel * 7.5;
+  height: $standart-pixel * 3;
+  max-width: fit-content;
+}
+
+.inputField {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  outline: none;
+  border: $normal-border solid $dusty-color;
+  padding: $small-pixel;
+  width: $standart-pixel * 12.5;
+  box-sizing: border-box;
+  font-family: $base-font;
+  font-size: $small-number * 1.5;
+  color: $dusty-color;
+}
+
+.inputField:focus {
+  border-color: $dark-color;
+  color: $dusty-color;
+}
+
+.errorMessage {
+  margin-top: $small-pixel;
+  font-family: $base-font;
+  font-size: $small-number * 1.5;
+  color: $red;
+}
+
+.input {
+  margin: 0;
+  padding: 0;
+}

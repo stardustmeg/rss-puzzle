@@ -1,0 +1,98 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.wrapper {
+  height: 100%;
+  max-width: 1400px;
+}
+
+.pageContainer {
+  height: 100%;
+}
+
+.imagesContainer {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin: 20px;
+  padding: 0;
+  height: fit-content;
+  max-width: 1340px;
+  background-color: $light-color;
+}
+
+.imageContainer {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  padding: 0;
+  width: 120px;
+  height: 100px;
+  filter: blur(0);
+  transition-duration: 0.5s;
+
+  :hover {
+    box-shadow: $image-shadow;
+    transition-duration: 0.5s;
+    cursor: pointer;
+    scale: (1.1);
+  }
+}
+
+.blurOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+}
+
+.imageElement {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.dropdownMenu {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 150px;
+  transform: translateX(-50%);
+}
+
+.option {
+  display: block;
+  border: $normal-border solid $dusty-color;
+  padding: 5px;
+  font-family: $fancy-font;
+  font-size: $standart-number;
+  color: $basic-color;
+  background-color: $light-color;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+  cursor: pointer;
+
+  :hover {
+    background-color: $dark-color;
+  }
+}
+
+.finished {
+  color: #c0c0c0;
+}
+
+.dropdownMenu.active .option {
+  display: block;
+}

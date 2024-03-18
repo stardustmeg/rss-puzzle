@@ -1,0 +1,43 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $big-number;
+  max-width: 800px;
+  box-shadow: $base-shadow;
+  font-family: $fancy-font;
+  font-size: $standart-number * 1.5;
+  text-align: center;
+  color: $dusty-color;
+  background-color: $light-color;
+}
+
+.pageDescription {
+  font-family: $base-font;
+  font-size: $standart-number;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  height: fit-content;
+  max-width: 768px;
+}
+
+.imageElement {
+  width: 100%;
+  object-fit: contain;
+}
+
+.imageDescriptionPlate {
+  margin: 10px;
+  font-family: $fancy-font;
+  font-size: $standart-number * 1.5;
+  text-align: center;
+}

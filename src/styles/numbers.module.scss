@@ -1,0 +1,9 @@
+$standart-number: 1.25rem; // 20px
+$big-number: $standart-number * 2; // 40px
+$small-number: calc($standart-number / 2); // 10px
+$standart-pixel: 20px;
+$small-pixel: calc($standart-pixel / 2);
+$big-pixel: $standart-pixel * 2;
+$standart-view-height: 90vh;
+$normal-border: 1px;
+$bold-border: $normal-border * 2;

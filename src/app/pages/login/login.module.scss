@@ -1,0 +1,37 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: $small-number;
+  height: $big-pixel * 10;
+  max-width: fit-content;
+  box-shadow: $base-shadow;
+  font-family: $fancy-font;
+  font-size: $standart-number;
+  text-align: center;
+  color: $dusty-color;
+  background-color: $light-color;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: $standart-pixel;
+}
+
+.button {
+  opacity: 1;
+  transition: 0.8s;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  cursor: default;
+}

@@ -1,0 +1,37 @@
+@import '../../../styles/colors.module';
+@import '../../../styles/fonts.module';
+@import '../../../styles/numbers.module';
+@import '../../../styles/shadows.module';
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: $standart-number;
+  padding: $big-number;
+  max-width: $big-number * 20;
+  box-shadow: $base-shadow;
+  font-family: $fancy-font;
+  font-size: $big-number;
+  text-align: center;
+  color: $dusty-color;
+  background-color: $light-color;
+}
+
+.wrapper {
+  max-width: $standart-number * 35;
+}
+
+.gameName {
+  margin-top: $standart-number;
+  font-weight: $bold-font;
+  color: $basic-color;
+}
+
+.description {
+  margin: $standart-number;
+  font-family: $base-font;
+  font-size: $standart-number;
+  text-align: center;
+  color: $dark-color;
+}
