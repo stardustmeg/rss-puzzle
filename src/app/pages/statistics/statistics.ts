@@ -2,7 +2,7 @@ import type { ReduxStore } from '../../lib/store/types.ts';
 import type { Router } from '../../router/router.ts';
 import type { Action, State } from '../../store/reducer.ts';
 
-import { formatAuthorName, updateNextRound } from '../../components/playground/helpers/playground-helper.ts';
+import { formatAuthorName } from '../../components/playground/helpers/playground-helper.ts';
 import { APP_ROUTE } from '../../constants/app-routes.ts';
 import { buttonsTextContent, dataLinks, eventNames, tagNames } from '../../constants/constants.ts';
 import { BaseElement } from '../../utils/base-element.ts';
