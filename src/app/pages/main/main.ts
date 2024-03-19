@@ -11,6 +11,7 @@ import { addFinishedRound, setCurrentSentenceIndex } from '../../store/actions.t
 import { BaseElement } from '../../utils/base-element.ts';
 import styles from './main.module.scss';
 
+// eslint-disable-next-line max-lines-per-function
 export default function createPage(store: ReduxStore<State, Action>, router: Router): BaseElement {
   const mainPage = new BaseElement(tagNames.div, [styles.pageContainer]);
 
@@ -35,7 +36,7 @@ export default function createPage(store: ReduxStore<State, Action>, router: Rou
 
   iDontKnowButton.onclick = (event): void => {
     event.preventDefault();
-    handleIDontKnowButtonClick(store, iDontKnowButton, playground, continueButton, statisticsButton);
+    handleIDontKnowButtonClick(store, iDontKnowButton, playground, continueButton, statisticsButton, nextRound);
   };
 
   const continueButton = document.createElement(tagNames.button);
@@ -43,7 +44,18 @@ export default function createPage(store: ReduxStore<State, Action>, router: Rou
 
   continueButton.onclick = (event): void => {
     event.preventDefault();
-    handleContinueButtonClick(store, continueButton, playground, iDontKnowButton, statisticsButton);
+    handleContinueButtonClick(store, continueButton, playground, iDontKnowButton, statisticsButton, nextRound);
+  };
+
+  const nextRound = document.createElement(tagNames.button);
+  nextRound.classList.add(styles.hidden);
+  nextRound.textContent = buttonsTextContent.CONTINUE;
+
+  nextRound.onclick = (event): void => {
+    event.preventDefault();
+    router.navigateTo(APP_ROUTE.Main);
+    store.dispatch(setCurrentSentenceIndex(0));
+  updateNextRound(store);
   };
 
   const statisticsButton = document.createElement(tagNames.button);
@@ -56,7 +68,7 @@ export default function createPage(store: ReduxStore<State, Action>, router: Rou
   };
 
   const buttonsWrapper = new BaseElement(tagNames.div, [styles.wrapper]);
-  buttonsWrapper.append(chooseGameButton, iDontKnowButton, continueButton, statisticsButton);
+  buttonsWrapper.append(chooseGameButton, iDontKnowButton, continueButton, nextRound, statisticsButton);
 
   mainPage.append(roundInfo, playground, buttonsWrapper);
 
@@ -76,6 +88,7 @@ function handleContinueButtonClick(
   playground: Playground,
   buttonToHide: HTMLElement,
   buttonToShow: HTMLElement,
+  secondButtonToShow: HTMLElement,
 ): void {
   const { currentGameLevel, currentGameRound, currentSentenceIndex } = store.getState();
 
@@ -90,6 +103,7 @@ function handleContinueButtonClick(
     buttonToHide.classList.add(styles.hidden);
 
     buttonToShow.classList.remove(styles.hidden);
+    secondButtonToShow.classList.remove(styles.hidden);
 
     playground.displayInfoAboutRound();
 
@@ -103,6 +117,7 @@ function handleIDontKnowButtonClick(
   playground: Playground,
   buttonToHide: HTMLElement,
   buttonToShow: HTMLElement,
+  secondButtonToShow: HTMLElement,
 ): void {
   const { currentGameLevel, currentGameRound, currentSentenceIndex } = store.getState();
 
@@ -117,6 +132,7 @@ function handleIDontKnowButtonClick(
     buttonToHide.classList.add(styles.hidden);
 
     buttonToShow.classList.remove(styles.hidden);
+    secondButtonToShow.classList.remove(styles.hidden);
 
     playground.displayInfoAboutRound();
 
