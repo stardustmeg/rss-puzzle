@@ -260,22 +260,22 @@ class Piece {
     context.lineTo(this.x, this.y + this.height);
     context.closePath();
 
-    context.drawImage(this.svg, this.x, this.y, this.width, this.height);
-
     context.clip();
 
     context.drawImage(
       this.img,
       (this.colIndex * this.img.width) / size[`columns${rowIndex}`],
       (this.rowIndex * this.img.height) / size.rows,
-      this.img.width / size[`columns${rowIndex}`],
+      (this.img.width) / size[`columns${rowIndex}`],
       this.img.height / size.rows,
-      this.x,
+      this.x - 40,
       this.y,
-      this.width,
+      this.width + 80,
       this.height,
     );
 
+    context.drawImage(this.svg, this.x, this.y, this.width + 40, this.height);
+    context.clip();
     context.restore();
 
     context.font = 'bold 11px Arial';
