@@ -17,7 +17,7 @@ export default function createPage(store: ReduxStore<State, Action>, router: Rou
 
   continueButton.onclick = (event): void => {
     event.preventDefault();
-    updateNextRound(store);
+    // updateNextRound(store);
     router.navigateTo(APP_ROUTE.Main);
   };
 
