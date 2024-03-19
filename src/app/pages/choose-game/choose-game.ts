@@ -42,7 +42,9 @@ export class GameChoiceField extends BaseElement {
     }
   }
 
-  private async loadImagesForLevel(store: ReduxStore<State, Action>, router: Router): Promise<void> {
+  private async loadImagesForLevel(store: ReduxStore<State, Action>, router: Router, currentLevel = 0): Promise<void> {
+
+    const { gameRoundsFinished } = store.getState()
     try {
       const sources = await this.getImageSourcesForLevel(store);
       this.imagesContainer.replaceChildren();
@@ -66,7 +68,13 @@ export class GameChoiceField extends BaseElement {
           router.navigateTo(APP_ROUTE.Main);
         });
 
-        imageContainer.append(blurOverlay, imageElement);
+        if (gameRoundsFinished[`level${currentLevel}`].includes(index)) {
+          imageContainer.append(imageElement);
+        } else {
+          imageContainer.append(blurOverlay, imageElement);
+        }
+
+        // imageContainer.append(blurOverlay, imageElement);
         this.imagesContainer.append(imageContainer);
       });
     } catch (error) {
@@ -79,10 +87,16 @@ export class GameChoiceField extends BaseElement {
   }
 
   private setupDropdown(store: ReduxStore<State, Action>, router: Router): void {
+    const { gameLevelsFinished } = store.getState()
     const levels = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6'];
     levels.forEach((level, index) => {
       const option = new BaseElement(tagNames.option, [styles.option], { value: index.toString() }, level).getNode();
       this.dropdown.append(option);
+
+      if (gameLevelsFinished.includes(index)) {
+        option.classList.add(styles.finished)
+      }
+
     });
 
     this.dropdown.addEventListener(eventNames.CHANGE, async (event) => {
@@ -90,7 +104,7 @@ export class GameChoiceField extends BaseElement {
         const selectedLevel = parseInt(event.target.value, 10);
         store.dispatch(changeLevel(selectedLevel));
         try {
-          await this.loadImagesForLevel(store, router);
+          await this.loadImagesForLevel(store, router, selectedLevel);
         } catch (error) {
           if (error instanceof Error) {
             throw new Error(error.message);
